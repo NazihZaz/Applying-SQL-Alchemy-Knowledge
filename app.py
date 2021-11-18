@@ -4,6 +4,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 import numpy as np
+import datetime as dt
 
 # create engine to hawaii.sqlite
 database_path="Resources/hawaii.sqlite"
@@ -27,7 +28,7 @@ app=Flask(__name__)
 
 # Flask routes
 @app.route("/")
-def Home():
+def home():
     """List all available api routes"""
     return (
             f"Welcome to Nazih Bouanani's API Home Page<br/>"
@@ -35,12 +36,12 @@ def Home():
             f"/api/v1.0/precipitation<br/>"
             f"/api/v1.0/stations<br/>"
             f"/api/v1.0/tobs<br/>"
-            f"/api/v1.0/<start><br/>"
-            f"/api/v1.0/<start>/<end><br/>"
+            f"/api/v1.0/start<br/>"
+            f"/api/v1.0/start/end<br/>"
             )
 
 @app.route("/api/v1.0/precipitation")
-def Prcp():
+def prcp():
     """Redirected to the Precipitation Page"""
      
     # Create our session (link) from Python to the DB
@@ -52,18 +53,18 @@ def Prcp():
     # Close the session
     session.close()
 
-    # Create a dictionary from the row data and append to a list of precipitations
+    # Create a dictionary from the row data and append to a list of all_prcp
     all_prcp = []
+    
     for date, prcp in max_precipitation:
-        prcp_dict = {}
-        prcp_dict["Date"] = date
-        prcp_dict["Precipitation"] = prcp
-        all_prcp.append(prcp_dict)
+        dates= date
+        prcps = prcp
+        all_prcp.append({dates:prcps})
     
     return jsonify(all_prcp)
 
 @app.route("/api/v1.0/stations")
-def Stations():
+def stations():
     """Redirected to the Station Page"""
     
     # Create our session (link) from Python to the DB
@@ -78,6 +79,83 @@ def Stations():
     all_stations = list(np.ravel(no_stations))
 
     return jsonify(all_stations)
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    """Redirected to the Temperature of Observation Page"""
     
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    # Query all temperatures
+    year_temperatures=session.query(Measurement.date,Measurement.tobs).\
+    filter(Measurement.station=="USC00519281").\
+    filter(Measurement.date>="2016-08-23").all()
+
+    session.close()
+    
+    all_tobs=[]
+    
+    # Create a dictionary from the row data and append to a list of all_tobs
+    for date, tobs in year_temperatures:
+        dates= date
+        tobs_tot= tobs
+        all_tobs.append({dates:tobs_tot})
+
+    return jsonify(all_tobs)
+
+@app.route("/api/v1.0/<start>")
+def temperatures_start(start):
+    """Fetch the minimun, average and maximum temperature for the dates
+       greater or equal to the start date, or a 404 if not."""
+        
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    # Query all temperatures
+    sel=[Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs), func.avg(Measurement.tobs)]
+    temperatures=session.query(*sel).filter(Measurement.station=="USC00519281").\
+        filter(Measurement.date>=start).all()
+    
+    last_year=session.query(Measurement.date).filter(Measurement.date>="2016-08-23").\
+        filter(Measurement.date<="2017-08-23").all()
+        
+    session.close()
+    
+    last_year_dates=list(np.ravel(last_year))
+    
+    for start_date in last_year_dates:
+        if start_date==start:
+            for date,tmin,tmax,tavg in temperatures:
+                return jsonify([f"The date range is: ('{start}' and '2017-08-23'), Temperature Minimum: {tmin}, Temperature Average: {round(tavg,1)}, Temperature Maximum: {tmax}"])
+    return jsonify([f"error: Data between '{start}' and '2017-08-23' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2016-08-23' and '2017-08-23')"]), 404
+
+@app.route("/api/v1.0/<start>/<end>")
+def temperatures_end(start,end):
+    """Fetch the minimun, average and maximum temperature for the dates
+       greater or equal to the start date, or a 404 if not."""
+        
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+    
+    # Query all temperatures
+    sel=[Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs), func.avg(Measurement.tobs)]
+    temperatures=session.query(*sel).filter(Measurement.station=="USC00519281").\
+        filter(Measurement.date>=start).filter(Measurement.date<=end).all()
+    
+    last_year=session.query(Measurement.date).filter(Measurement.date>="2016-08-23").\
+        filter(Measurement.date<="2017-08-23").all()
+        
+    session.close()
+    
+    last_year_dates=list(np.ravel(last_year))
+    for start_date in last_year_dates:
+        for end_date in last_year_dates:
+            if start_date==start and end_date==end:
+                for date,tmin,tmax,tavg in temperatures:
+                    return jsonify([f"The date range is: ('{start}' and '{end}'), Temperature Minimum: {tmin}, Temperature Average: {round(tavg,1)}, Temperature Maximum: {tmax}"])
+    return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2016-08-23' and '2017-08-23'). "
+                    f"When enterring the endpoint make sure the start date is enterred first and the end date is enterred last"]), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
