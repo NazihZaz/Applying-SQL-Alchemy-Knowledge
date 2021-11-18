@@ -31,13 +31,13 @@ def home():
     """List all available api routes"""
     return (
             f"Welcome to Nazih Bouanani's API Home Page<br/>"
-            f"Data Available between 2010-01-01 and2017-08-23"
+            f"Data Available between 2010-01-01 and 2017-08-23<br/>"
             f"Here are the available Routes:<br/>"
             f"/api/v1.0/precipitation<br/>"
             f"/api/v1.0/stations<br/>"
             f"/api/v1.0/tobs<br/>"
-            f"/api/v1.0/start<br/>"
-            f"/api/v1.0/start/end<br/>"
+            f"/api/v1.0/2010-01-01<br/>"
+            f"/api/v1.0/2010-01-01/2017-08-23<br/>"
             )
 
 @app.route("/api/v1.0/precipitation")
@@ -158,13 +158,14 @@ def temperatures_end(start,end):
     all_dates=list(np.ravel(dates))
      
     for start_date in all_dates:
-        for end_date in all_dates:
-            if start_date==start and end_date==end:
-                for date,tmin,tmax,tavg in temperatures:
-                    return jsonify([{"Start Date": start, "End Date": end, "Temperature Minimum": tmin, "Temperature Average": round(tavg,1), "Temperature Maximum": tmax}])
-        return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). "
-                    f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last"]), 404
-    return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2016-08-23' and '2017-08-23'). "
+        if start_date==start:
+            for end_date in all_dates:
+                if end_date==end:
+                    for date,tmin,tmax,tavg in temperatures:
+                        return jsonify([{"Start Date": start, "End Date": end, "Temperature Minimum": tmin, "Temperature Average": round(tavg,1), "Temperature Maximum": tmax}])
+            return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). "
+                        f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last"]), 404
+    return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). "
                     f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last"]), 404
 
 if __name__ == '__main__':
