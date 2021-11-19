@@ -101,8 +101,6 @@ def tobs():
     all_tobs=[]
         
     for date, tobs in year_temperatures:
-        date
-        tobs
         all_tobs.append({date:tobs})
 
     # Jsonify the list
