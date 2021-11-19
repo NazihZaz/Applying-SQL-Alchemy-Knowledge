@@ -132,9 +132,15 @@ def temperatures_start(start):
     #  Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start 
     for start_date in all_dates:
         if start_date==start:
-            for date,tmin,tmax,tavg in temperatures:
-                return jsonify([{"Start Date": start, "End Date": "2017-08-23", "Temperature Minimum": tmin, "Temperature Average": round(tavg,1), "Temperature Maximum": tmax}])
-    return jsonify([f"error: Data between '{start}' and '2017-08-23' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23')"]), 404
+            results_start = {
+                "Start Date": start,
+                "End Date": "2017-08-23",
+                "Temperature Minimum": temperatures[0][1],
+                "Temperature Average": round(temperatures[0][3],1),
+                "Temperature Maximum": temperatures[0][2]
+            }
+            return jsonify([results_start])
+    return jsonify([f"error: Data between '{start}' and '2017-08-23' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). Here is an example: http://127.0.0.1:5000/api/v1.0/2010-01-01."]), 404
 
 @app.route("/api/v1.0/<start>/<end>")
 def temperatures_end(start,end):
@@ -161,12 +167,18 @@ def temperatures_end(start,end):
         if start_date==start:
             for end_date in all_dates:
                 if end_date==end:
-                    for date,tmin,tmax,tavg in temperatures:
-                        return jsonify([{"Start Date": start, "End Date": end, "Temperature Minimum": tmin, "Temperature Average": round(tavg,1), "Temperature Maximum": tmax}])
+                    results_start_end = {
+                        "Start Date": start,
+                        "End Date": "2017-08-23",
+                        "Temperature Minimum": temperatures[0][1],
+                        "Temperature Average": round(temperatures[0][3],1),
+                        "Temperature Maximum": temperatures[0][2]
+                    }
+                    return jsonify([results_start_end])
             return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). "
-                        f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last"]), 404
+                        f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last. Here is an example: http://127.0.0.1:5000/api/v1.0/2010-01-01/2017-08-23."]), 404
     return jsonify([f"error: Data between '{start}' and '{end}' was not found. Make sure the date format is 'YYYY-MM-DD' and within the following date range ('2010-01-01' and '2017-08-23'). "
-                    f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last"]), 404
+                    f"When enterring the endpoint, make sure the start date is enterred first and the end date is enterred last. Here is an example: http://127.0.0.1:5000/api/v1.0/2010-01-01/2017-08-23."]), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
