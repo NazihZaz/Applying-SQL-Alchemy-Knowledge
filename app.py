@@ -167,7 +167,7 @@ def temperatures_end(start,end):
                 if end_date==end:
                     results_start_end = {
                         "Start Date": start,
-                        "End Date": "2017-08-23",
+                        "End Date": end,
                         "Temperature Minimum": temperatures[0][1],
                         "Temperature Average": round(temperatures[0][3],1),
                         "Temperature Maximum": temperatures[0][2]
