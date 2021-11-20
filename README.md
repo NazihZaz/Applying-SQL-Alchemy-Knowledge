@@ -16,20 +16,20 @@ It also includes bonus parts of further temperature analysis:
 
 ### Step 1	
 
-a) To begin, I used Python, SQLAlchemy, Pands and Matplotlib  to do basic climate analysis and data exploration of the [climate database](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Resources/hawaii.sqlite). Below is the final output that shows the precipiations in inches on a period of 12 months (08/23/2016 - 08/23/2017) in Hawaii:
+a) To begin, I used Python, SQLAlchemy, Pandas and Matplotlib  to do basic climate analysis and data exploration of the [climate database](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Resources/hawaii.sqlite). Below is the final output that shows the precipiations in inches on a period of 12 months (08/23/2016 - 08/23/2017) in Hawaii:
 ![Precipitations](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/PRCP.png)
 
 b). Then, after retrieving the data for the most active station and querying the last 12 months of temperature of observation data (TOBS), I turned the query results into the plot below (Histogram with 12 bins):
-![12 Month TOBS](https://github.com/NazihZaz/sqlalchemy-challenge/tree/main/Images)
+![12 Month TOBS](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/12_Month_Temp.png)
 
 ### Step 2
 
-Using [Flask](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/app.py), I designed an API based on queries developed in Step 1.
-Here is the list of the different routes:
+To finish, and using [Flask](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/app.py), I designed an API based on queries developed in Step 1.
+Here is the list of the available routes:
 
 * `/` > Home page.
 
-* `/api/v1.0/precipitation` > Dictionary of daily precipitations.
+* `/api/v1.0/precipitation` > JSON representation of a dictionary of daily precipitations.
 
 * `/api/v1.0/stations` > List of stations from the dataset.
 
@@ -42,15 +42,15 @@ Here is the list of the different routes:
 ### Bonus Analysis
 
 * Part 1:
-- Identified the average temperature in June and December at all stations across all available years in the dataset.
-- Used t-test to determine whether the difference in the means, if any, is statistically significant. This led to the below conclusion using a paired t-test:
+1. Identified the average temperature in June and December at all stations across all available years in the dataset.
+2. Used t-test to determine whether the difference in the means, if any, is statistically significant. This led to the below conclusion using a paired t-test:
 
 	+ Given the returned P-value(0.00001452), the null hypothesis is rejected (P-value<0.05). Therefore, there is a meaningful difference between the temperature in 	June and December.
 
 * Part 2:
-- Calculated the Temperature Minimum, Average and Maximum for specific dates (In this case 08/01/2017 throuhg 08/10/2017).
-- Turned the results of the query above into the plot below:
-![Trip Avg Temp]()
+1. Calculated the Temperature Minimum, Average and Maximum for specific dates (In this case 08/01/2017 through 08/10/2017).
+2. Turned the results of the above query into the plot below:
+![Trip Avg Temp](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/Trip_avg_temp.png)
 
-- Calculated the daily normals for a range of dates (08/01/2017 throuhg 08/10/2017) and turned the results in the area plot shown below:
-!Daily Temperature Normals]()
+3. Calculated the daily normals for a range of dates (08/01/2017 through 08/10/2017) and turned the results in the area plot shown below:
+!Daily Temperature Normals](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/Daily_Temp_Normals.png)
