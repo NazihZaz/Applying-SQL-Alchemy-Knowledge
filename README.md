@@ -50,7 +50,9 @@ Here is the list of the available routes:
 * Part 2:
 1. Calculated the Temperature Minimum, Average and Maximum for specific dates (In this case 08/01/2017 through 08/10/2017).
 2. Turned the results of the above query into the plot below:
+
 ![Trip Avg Temp](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/Trip_avg_temp.png)
 
 3. Calculated the daily normals for a range of dates (08/01/2017 through 08/10/2017) and turned the results in the area plot shown below:
-!Daily Temperature Normals](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/Daily_Temp_Normals.png)
+
+![Daily Temperature Normals](https://github.com/NazihZaz/sqlalchemy-challenge/blob/main/Images/Daily_Temp_Normals.png)
